@@ -1,0 +1,85 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form"
+    class="sapUiSizeCompact"
+>
+    <VBox>
+        <Toolbar>
+            <Title
+                text="{= ${i18n>transactionHoldings} + ' (' + ${viewModel>/TransactionHoldingEquityLength} + ')' }"
+            />
+            <ToolbarSpacer />
+            <Button
+                text="{i18n>addBtnText}"
+                icon="sap-icon://add"
+                type="Accept"
+                press="onAddHoldingsEquity"
+                visible="{= ${viewModel>/formDetails/Status} === 'New' || ${viewModel>/formDetails/Status} === 'Draft' || ${viewModel>/formDetails/Status} === 'Returned'}"
+            />
+        </Toolbar>
+        <Table
+            id="idTransactionHoldingEquityTable"
+            items="{viewModel>/TransactionHoldingEquity}"
+            mode="{= ${viewModel>/formDetails/Status} !== 'Approved' &amp;&amp; ${viewModel>/formDetails/Status} !== 'Confirmed' ? 'SingleSelectLeft' : 'None'}"
+            updateFinished="onTransactionHoldingEquityTableUpdateFinish"
+        >
+            <columns>
+                <Column>
+                    <Text text="{i18n>natureOfSecurity}" />
+                </Column>
+                <Column>
+                    <Text text="{i18n>Noofsecuritiesprev}" />
+                </Column>
+                <Column>
+                    <Text text="{i18n>securityPurchased}" />
+                </Column>
+                <Column>
+                    <Text text="{i18n>Noofsecuritiesheld}" />
+                </Column>
+                <Column>
+                    <Text text="{i18n>createdOn}" />
+                </Column>
+                <Column>
+                    <Text text="{i18n>Dpclientid}" />
+                </Column>
+                <Column>
+                    <Text text="{i18n>Transactiondate}" />
+                </Column>
+                <Column>
+                    <Text text="{i18n>Securitypurchased}" />
+                </Column>
+                <Column >
+                    <Text text="{i18n>Securitysold}"></Text>
+                </Column>
+                <Column>
+                    <Text text="{i18n>SecuritypurchasedConsideration}" />
+                </Column>
+                <Column >
+                    <Text text="{i18n>SecuritysoldConsideration}"></Text>
+                </Column>
+                <Column >
+                    <Text text="{i18n>Offmarket}"></Text>
+                </Column>
+            </columns>
+            <items>
+                <ColumnListItem>
+                    <cells>
+                        <Text text="{viewModel>NatureOfSecurity}" />
+                        <Text text="{viewModel>Noofsecuritiesprev}" />
+                        <Text text="{viewModel>TransactionType}" />
+                        <Text text="{viewModel>Noofsecuritiesheld}" />
+                        <Text text="{path:'viewModel>Createdon',formatter:'.formatter.formatDate'}"></Text>
+                        <Text text="{viewModel>Dpclientid}" />
+                        <Text text="{path:'viewModel>Transactiondate',formatter:'.formatter.formatDate'}" />
+                        <Text text="{viewModel>Securitypurchased}" />
+                        <Text text="{viewModel>Securitysold}" />
+                        <Text text="{viewModel>Securitypurchasedconso}"></Text>
+                        <Text text="{viewModel>Securitysoldconso}"></Text>
+                        <Text text="{viewModel>Offmarket}" />
+                    </cells>
+                </ColumnListItem>
+            </items>
+        </Table>
+    </VBox>
+</core:FragmentDefinition>

@@ -1,0 +1,144 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form">
+    <Dialog title="{i18n>transactionRelativesDetail}" titleAlignment="Center">
+        <f:SimpleForm
+            editable="true"
+            layout="ColumnLayout"
+            binding="{viewModel>/selectedTransactionRelatives}">
+            <Label text="{i18n>natureOfSecurity}" required="true" />
+            <ComboBox
+                selectedKey="{viewModel>NatureOfSecurity}"
+                editable="false"
+                valueState="{viewModel>/valueState/NatureOfSecurity}"
+                valueStateText="{viewModel>/valueStateText/NatureOfSecurity}"
+                change=".onComboboxChange"
+                items="{path: '/ZHR_CDS_IT_SECURITYNATURE_F4'}"
+                >
+                    <core:Item
+                        key="{StatusCode}"
+                        text="{Statustext}"
+                    />
+                </ComboBox>
+            <Label text="{i18n>Relativename}" required="true" />
+            <ComboBox
+                id="idRelativeName"
+                selectedKey="{viewModel>Relativename}"
+                editable="true"
+                valueState="{viewModel>/valueState/Relativename}"
+                valueStateText="{viewModel>/valueStateText/Relativename}" 
+                change=".onRelativeChange"
+                items="{path:'viewModel>/relativeData'}">
+                <core:Item key="{viewModel>NameOfImmediateRelatives}" text="{viewModel>NameOfImmediateRelatives}"></core:Item>
+            </ComboBox>
+            <Label text="{i18n>Noofsecuritiesprev}" required="true" />
+            <Input
+                value="{viewModel>Noofsecuritiesprev}"
+                editable="{viewModel>/editable/relatives/Noofsecuritiesprev}"
+                valueState="{viewModel>/valueState/Noofsecuritiesprev}"
+                valueStateText="{viewModel>/valueStateText/Noofsecuritiesprev}" 
+                liveChange=".onNumberInputChange"/>
+
+            <Label text="{i18n>securityPurchased}" required="true" />
+            <ComboBox
+                selectedKey="{viewModel>TransactionType}"
+                editable="true"
+                valueState="{viewModel>/valueState/securityPurchased}"
+                valueStateText="{viewModel>/valueStateText/securityPurchased}"
+                change=".onComboboxChange"
+                items="{path: '/ZHR_CDS_IT_TRANSACTION2_F4H'}"
+                >
+                    <core:Item
+                        key="{StatusCode}"
+                        text="{Statustext}"
+                    />
+                </ComboBox>
+
+            <Label text="{i18n>Noofsecuritiesheld}" required="true" />
+            <Input
+                value="{viewModel>Noofsecuritiesheld}"
+                editable="false"
+                valueState="{viewModel>/valueState/Noofsecuritiesheld}"
+                valueStateText="{viewModel>/valueStateText/Noofsecuritiesheld}"
+                liveChange=".onNumberInputChange" />
+
+            <Label text="{i18n>Dpclientid}" required="true" />
+            <Input
+                value="{viewModel>Dpclientid}"
+                editable="true"
+                valueState="{viewModel>/valueState/Dpclientid}"
+                valueStateText="{viewModel>/valueStateText/Dpclientid}" />
+            <Label text="{i18n>Relativetype}" required="true" />
+            <Input
+                value="{viewModel>Relativetype}"
+                editable="false"
+                valueState="{viewModel>/valueState/Relativetype}"
+                valueStateText="{viewModel>/valueStateText/Relativetype}" 
+                liveChange=".onMandatoryChange"/>
+            <Label text="{i18n>Transactiondate}" required="true" />
+            <DatePicker
+                value="{viewModel>Transactiondate}"
+                editable="true"
+                valueState="{viewModel>/valueState/Transactiondate}"
+                valueStateText="{viewModel>/valueStateText/Transactiondate}"
+                valueFormat="yyyyMMdd"
+                displayFormat="dd.MM.yyyy"
+                change="onDateChange" />
+
+            <Label text="{i18n>Securitypurchased}" required="true" />
+            <Input
+                value="{viewModel>Securitypurchased}"
+                editable="{= ${viewModel>TransactionType} === 'Bought'}"
+                valueState="{viewModel>/valueState/Securitypurchased}"
+                valueStateText="{viewModel>/valueStateText/Securitypurchased}"
+                liveChange=".onNumberInputChange" />
+
+            <Label text="{i18n>Securitysold}" required="true" />
+            <Input
+                value="{viewModel>Securitysold}"
+                editable="{= ${viewModel>TransactionType} === 'Sold'}"
+                valueState="{viewModel>/valueState/Securitysold}"
+                valueStateText="{viewModel>/valueStateText/Securitysold}"
+                liveChange=".onNumberInputChange" />
+            <Label text="{i18n>SecuritypurchasedConsideration}" required="true" />
+            <Input
+                value="{viewModel>Securitypurchasedconso}"
+                editable="{= ${viewModel>TransactionType} === 'Bought'}"
+                valueState="{viewModel>/valueState/Securitypurchasedconso}"
+                valueStateText="{viewModel>/valueStateText/Securitypurchasedconso}"
+                liveChange=".onNumberInputChange" />
+
+            <Label text="{i18n>SecuritysoldConsideration}" required="true" />
+            <Input
+                value="{viewModel>Securitysoldconso}"
+                editable="{= ${viewModel>TransactionType} === 'Sold'}"
+                valueState="{viewModel>/valueState/Securitysoldconso}"
+                valueStateText="{viewModel>/valueStateText/Securitysoldconso}"
+                liveChange=".onNumberInputChange" />  
+
+            <Label text="{i18n>Offmarket}" required="true" />
+            <ComboBox
+                selectedKey="{viewModel>Offmarket}"
+                editable="true"
+                valueState="{viewModel>/valueState/Offmarket}"
+                valueStateText="{viewModel>/valueStateText/Offmarket}"
+                change=".onComboboxChange"
+                items="{path:'/ZHR_CDS_IT_TRADEPERFORM2_F4H'}"
+            >
+                <core:Item key="{StatusCode}" text="{Statustext}"></core:Item>     
+            </ComboBox>
+        </f:SimpleForm>
+        <beginButton>
+            <Button
+                text="{i18n>okBtnText}"
+                press="onSaveTransactionRelativeDetails"
+                type="Emphasized" />
+        </beginButton>
+        <endButton>
+            <Button
+                text="{i18n>cancelBtnText}"
+                press="onCancelTransactionRelativeDetails" />
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

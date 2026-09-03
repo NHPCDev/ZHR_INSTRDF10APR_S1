@@ -1,0 +1,8 @@
+{
+  "xsappname":"comnhpczhrinstrdf10aprs1",
+  "tenant-mode":"dedicated",
+  "description": "Security profile of called application",
+  "scopes": [],
+  "attributes": [],
+  "role-templates": []
+}

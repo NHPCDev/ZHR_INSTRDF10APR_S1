@@ -1,0 +1,291 @@
+<mvc:View
+    controllerName="com.nhpc.zhrinstrdf10aprs1.controller.Dashboard"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:table="sap.ui.table"
+    xmlns:f="sap.f"
+    xmlns:fb="sap.ui.comp.filterbar"
+    class="sapUiSizeCompact"
+>
+    <f:DynamicPage
+        id="_IDGenDynamicPage1"
+        headerExpanded="true"
+        showFooter="true"
+    >
+        <f:header>
+            <f:DynamicPageHeader id="_IDGenDynamicPageHeader1">
+                <f:content>
+                    <fb:FilterBar
+                        id="filterbar"
+                        persistencyKey="myPersKey"
+                        useToolbar="false"
+                        search=".onSearchBtn"
+                    >
+                        <fb:filterGroupItems>
+                            <fb:FilterGroupItem
+                                id="_IDGenFilterGroupItem1"
+                                name="Financial Year"
+                                label="{i18n>fYear}"
+                                groupName="Group1"
+                                visibleInFilterBar="true"
+                            >
+                                <fb:control>
+                                    <ComboBox
+                                        id="idFilterFinancialYear"
+                                        width="100%"
+                                        selectedKey="{viewModel>/filterData/Fyear}"
+                                        change="onComboboxChange"
+                                        items="{path: '/FinancialyearF4HSet'}"
+                                        valueState="{viewModel>/valueState/selectedYear}"
+                                        valueStateText="{viewModel>/valueStateText/selectedYear}"
+                                    >
+                                        <core:ListItem
+                                            key="{Year}"
+                                            text="{Year}"
+                                        />
+                                    </ComboBox>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                        </fb:filterGroupItems>
+                    </fb:FilterBar>
+                </f:content>
+            </f:DynamicPageHeader>
+        </f:header>
+        <f:content>
+            <VBox
+                id="_IDGenVBox1"
+                class="sapUiSmallMargin"
+            >
+                <HBox
+                    justifyContent="Center"
+                    class="sapUiSmallMarginBottom"
+                >
+                    <SegmentedButton
+                        id="idDashboardSegmentedButton"
+                        selectedKey="submitted"
+                        selectionChange="onDashboardSegmentChange"
+                    >
+                        <items>
+                            <SegmentedButtonItem
+                                key="submitted"
+                                text="{i18n>submitted}"
+                                width="50%"
+                            />
+                            <SegmentedButtonItem
+                                key="notSubmitted"
+                                text="{i18n>notSubmitted}"
+                                width="75%"
+                            />
+                        </items>
+                    </SegmentedButton>
+                </HBox>
+                <Table
+                    id="idDashboardTable"
+                    visible="true"
+                    items="{
+                path: '/Form9headSet',
+                filters: [
+                    {
+                        path: 'ApproverFlag',
+                        operator: 'EQ',
+                        value1: '10'
+                    },
+                    {
+                        path: 'Status',
+                        operator: 'EQ',
+                        value1: 'Confirmed'
+                    },
+                    {
+                        path: 'FormNo',
+                        operator: 'EQ',
+                        value1: 'FORM10'
+                    }
+                ]
+            }"
+                    growing="true"
+                    growingThreshold="20"
+                    width="100%"
+                    mode="None"
+                    autoPopinMode="true"
+                    alternateRowColors="true"
+                    sticky="ColumnHeaders,HeaderToolbar,InfoToolbar"
+                    updateFinished="onDashboardTableUpdateFinish"
+                >
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <Title
+                                id="dashBoardTitle"
+                                text="{= ${i18n>dashboardTableTitle} + ' (' + ${viewModel>/dashboardCount} + ')' }"
+                            />
+                            <ToolbarSpacer />
+
+                            <Button
+                                text="{i18n>downloadReportBtnText}"
+                                press="onDownload"
+                                type="Reject"
+                                icon="sap-icon://excel-attachment"
+                            />
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <columns>
+                        <Column>
+                            <Text text="{i18n>fYear}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>employeeID}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>createdOn}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>confirmedOn}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>confirmedBy}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>status}" />
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem
+                            type="Navigation"
+                            press="onListItemPress"
+                        >
+                            <cells>
+                                <ObjectIdentifier title="{Fyear}" />
+                                <ObjectIdentifier
+                                    title="{Pernr}"
+                                    text="{EmployeeName}"
+                                />
+                                <Text
+                                    text="{
+                                path: 'CreatedOn',
+                                formatter: '.formatter.formatDate'
+                            }"
+                                />
+                                <Text
+                                    text="{
+                                path: 'ConfirmedOn',
+                                type: 'sap.ui.model.type.Date',
+                                formatOptions: {
+                                    source: {
+                                        pattern: 'dd.MM.yyyy'
+                                    },
+                                    pattern: 'dd.MM.yyyy'
+                                }
+                            }"
+                                />
+                                <Text text="{EmployeeName}" />
+                                <ObjectStatus
+                                    text="{
+                                path:'Status',
+                                formatter:'.formatter.formatTitleCase'
+                            }"
+                                    class="sapMObjectStatusMedium statusBoldText"
+                                    state="{
+                                path:'Status',
+                                formatter:'.formatter.formatStatusState'
+                            }"
+                                />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+                <Table
+                    id="idNotSubmittedTable"
+                    visible="false"
+                    items="{
+                path: '/Form10_DashboardSet',
+                filters:[{
+                    path: 'StatusFlag',
+                    operator: 'EQ',
+                    value1: 'NotSubmitted'
+                },{
+                    path:'Fyear',
+                    operator:'EQ',
+                    value1:'2026-2027'
+                }]
+            }"
+                    updateFinished="onTableUpdateFinishNotSubmitted"
+                    growing="true"
+                    growingThreshold="20"
+                    width="100%"
+                    mode="MultiSelect"
+                    autoPopinMode="true"
+                    alternateRowColors="true"
+                    sticky="ColumnHeaders,HeaderToolbar,InfoToolbar"
+                >
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <Title
+                                id="idNotSubmittedTitle"
+                                text="{i18n>notSubmittedTable}"
+                            />
+                            <ToolbarSpacer />
+                            <Button
+                                text="{i18n>downloadReportBtnText}"
+                                press="onDownloadNotSubmitted"
+                                type="Reject"
+                                icon="sap-icon://excel-attachment"
+                            />
+                            <MenuButton
+                                text="Actions"
+                                icon="sap-icon://action"
+                                type="Emphasized"
+                            >
+                                <menu>
+                                    <Menu>
+                                        <MenuItem
+                                            text="{i18n>sendNotification}"
+                                            press=".onOption1Press"
+                                            icon="sap-icon://email"
+                                        />
+                                        <MenuItem
+                                            text="{i18n>sendNotificationAll}"
+                                            press=".onOption2Press"
+                                            icon="sap-icon://email"
+                                        />
+                                    </Menu>
+                                </menu>
+                            </MenuButton>
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <columns>
+                        <Column>
+                            <Text text="{i18n>pernr}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>empName}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>designation}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>placeOfWork}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>status}" />
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="{Pernr}" />
+                                <Text text="{EmpName}" />
+                                <Text text="{Designation}" />
+                                <Text text="{Placeofwork}" />
+                                <ObjectStatus
+                                    text="{Status}"
+                                    state="Error"
+                                    class="statusBoldText"
+                                />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </VBox>
+        </f:content>
+    </f:DynamicPage>
+</mvc:View>
