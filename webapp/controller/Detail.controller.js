@@ -179,6 +179,7 @@ sap.ui.define([
                         oViewModel.setProperty("/TransactionRelativesEquity", oData.results[0].Form9HeadToRelatives.results.filter(i => i.NatureOfSecurity === "Equity"));
                         oViewModel.setProperty("/formDetails/Status", oData.results[0].Status);
                         oViewModel.setProperty("/formDetails/UndertakingText", oData.results[0].UndertakingText);
+                        oViewModel.setProperty("/formDetails/Designation", oData.results[0].Designation);
                         let bFilters = [
                             new Filter(
                                 "Pernr",
