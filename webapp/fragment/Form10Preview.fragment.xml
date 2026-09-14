@@ -22,7 +22,7 @@
         <Label text="{i18n>employeeNameLabel}"></Label>
         <Text text="{path: 'viewModel>/formDetails/EmployeeName', formatter: '.formatter.formatBlankValue'}"></Text>
         <Label text="{i18n>designationLabel}"></Label>
-        <Text text="{path: 'viewModel>/formDetails/PositionText', formatter: '.formatter.formatBlankValue'}"></Text>
+        <Text text="{path: 'viewModel>/formDetails/Designation', formatter: '.formatter.formatBlankValue'}"></Text>
         <Label text="{i18n>departmentLabel}"></Label>
         <Text text="{path: 'viewModel>/formDetails/EmployeeDepartment', formatter: '.formatter.formatBlankValue'}"></Text>
         <Label text="{i18n>dateOfJoiningLabel}"></Label>
