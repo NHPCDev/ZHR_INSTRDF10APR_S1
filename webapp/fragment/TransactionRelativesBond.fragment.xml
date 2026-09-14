@@ -32,6 +32,12 @@
                     <Text text="{i18n>Relativename}" />
                 </Column>
                 <Column>
+                    <Text text="{i18n>Relativetype}" />
+                </Column>
+                <Column>
+                    <Text text="{i18n>Others}" />
+                </Column>
+                <Column>
                     <Text text="{i18n>Noofsecuritiesprev}" />
                 </Column>
                 <Column>
@@ -45,10 +51,7 @@
                 </Column>
                 <Column>
                     <Text text="{i18n>Dpclientid}" />
-                </Column>
-                <Column>
-                    <Text text="{i18n>Relativetype}" />
-                </Column>
+                </Column>                
                 <Column>
                     <Text text="{i18n>Transactiondate}" />
                 </Column>
@@ -73,12 +76,13 @@
                     <cells>
                         <Text text="{viewModel>NatureOfSecurity}" />
                         <Text text="{viewModel>Relativename}"/>
+                        <Text text="{viewModel>Relativetype}" />
+                        <Text text="{viewModel>Others}" />
                         <Text text="{viewModel>Noofsecuritiesprev}" />
                         <Text text="{viewModel>TransactionType}" />
                         <Text text="{viewModel>Noofsecuritiesheld}" />
                         <Text text="{path:'viewModel>Createdon',formatter:'.formatter.formatDate'}"></Text>
-                        <Text text="{viewModel>Dpclientid}" />
-                        <Text text="{viewModel>Relativetype}" />
+                        <Text text="{viewModel>Dpclientid}" />                        
                         <Text text="{path:'viewModel>Transactiondate',formatter:'.formatter.formatDate'}" />
                         <Text text="{viewModel>Securitypurchased}" />
                         <Text text="{viewModel>Securitysold}" />

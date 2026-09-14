@@ -239,12 +239,12 @@
                                     <Menu>
                                         <MenuItem
                                             text="{i18n>sendNotification}"
-                                            press=".onOption1Press"
+                                            press=".onSendNotificationPress"
                                             icon="sap-icon://email"
                                         />
                                         <MenuItem
                                             text="{i18n>sendNotificationAll}"
-                                            press=".onOption2Press"
+                                            press=".onSendNotificationPressAll"
                                             icon="sap-icon://email"
                                         />
                                     </Menu>

@@ -21,12 +21,10 @@ sap.ui.define([
 
             // set the device model
             this.setModel(models.createDeviceModel(), "device");
-            this.setModel(models.createViewModel(),"viewModel");
-
-            await this._checkEligibility();
-
+            this.setModel(models.createViewModel(),"viewModel");          
             // enable routing
             this.getRouter().initialize();
+            await this._checkEligibility();
             messenger.init(this);
         },
         _checkEligibility:async function () {
@@ -38,13 +36,10 @@ sap.ui.define([
                 filters: aFilters,
                 success: function (oResponse) {
                     if (oResponse.results && oResponse.results.length > 0 && oResponse.results[0].AuthResponse === "No") {
-                        this.getRouter().initialize();
                         this.getRouter().navTo("RouteErrorPage");
- 
                     }
                 }.bind(this),
                  error: function () {
-                     this.getRouter().initialize();
                  }.bind(this)
             });
  

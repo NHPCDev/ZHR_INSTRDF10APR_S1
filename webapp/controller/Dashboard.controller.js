@@ -35,13 +35,13 @@ sap.ui.define([
             );
         },
 
-        onDashboardTableUpdateFinish: function (oEvent) {
-            var oResourceBundle = this.getResourceBundle(),
-                iCount = oEvent.getParameter("total");
-            var sTitle = oResourceBundle.getText("notSubmittedTable") + " (" + iCount + ")";
-            this.byId("idNotSubmittedTitle").setText(sTitle);
-        },
-        onTableUpdateFinishNotSubmitted:function(oEvent){
+        // onDashboardTableUpdateFinish: function (oEvent) {
+        //     var oResourceBundle = this.getResourceBundle(),
+        //         iCount = oEvent.getParameter("total");
+        //     var sTitle = oResourceBundle.getText("notSubmittedTable") + " (" + iCount + ")";
+        //     this.byId("idNotSubmittedTitle").setText(sTitle);
+        // },
+        onTableUpdateFinishNotSubmitted: function (oEvent) {
             var oResourceBundle = this.getResourceBundle(),
                 iCount = oEvent.getParameter("total");
             var sTitle = oResourceBundle.getText("notSubmittedTable") + " (" + iCount + ")";
@@ -187,28 +187,58 @@ sap.ui.define([
             });
         },
         onDownload: function () {
-            var oTable = this.byId("idDashboardTable");
-            var oBinding = oTable.getBinding("items");
-            var aData = oBinding.getContexts().map(function (oContext) {
-                var oData = Object.assign({}, oContext.getObject());
-                oData.CreatedOn = formatter.formatDate(oData.CreatedOn);
-                oData.ConfirmedOn = formatter.formatDate(oData.ConfirmedOn);
-                return oData;
+            var oModel = this.getModel();
+            let oResourceBundle = this.getResourceBundle();
+            var aFilters = [
+                new sap.ui.model.Filter(
+                    "ApproverFlag",
+                    sap.ui.model.FilterOperator.EQ,
+                    "10"
+                ),
+                new sap.ui.model.Filter(
+                    "Status",
+                    sap.ui.model.FilterOperator.EQ,
+                    "Confirmed"
+                ),
+                new sap.ui.model.Filter(
+                    "FormNo",
+                    sap.ui.model.FilterOperator.EQ,
+                    "FORM10"
+                )
+            ];
+            BusyIndicator.show(0);
+            oModel.read("/Form9headSet", {
+                filters: aFilters,
+                success: function (oData) {
+                    var aData = oData.results.map(function (oData) {
+                        var oRow = Object.assign({}, oData);
+                        oRow.CreatedOn = formatter.formatDate(oRow.CreatedOn);
+                        oRow.ConfirmedOn = formatter.formatDate(oRow.ConfirmedOn);
+
+                        return oRow;
+                    });
+                    var aCols = this.createColumnConfig();
+                    var oSettings = {
+                        workbook: {
+                            columns: aCols
+                        },
+                        dataSource: aData,
+                        fileType: "xlsx",
+                        fileName: this.getResourceBundle().getText("title")
+                    };
+                    var oSheet = new Spreadsheet(oSettings);
+                    oSheet.build()
+                        .finally(function () {
+                            oSheet.destroy();
+                            BusyIndicator.hide();
+                        });
+
+                }.bind(this),
+                error: function () {
+                    BusyIndicator.hide();
+                    messenger.error(oResourceBundle.getText("failedToDownloadData"));
+                }
             });
-            var aCols = this.createColumnConfig();
-            var oSettings = {
-                workbook: {
-                    columns: aCols
-                },
-                dataSource: aData,
-                fileType: "xlsx",
-                fileName: this.getResourceBundle().getText("title")
-            };
-            var oSheet = new Spreadsheet(oSettings);
-            oSheet.build()
-                .finally(function () {
-                    oSheet.destroy();
-                });
         },
         createColumnConfig: function () {
             var aCols = [];
@@ -243,26 +273,47 @@ sap.ui.define([
             return aCols;
         },
         onDownloadNotSubmitted: function () {
-            var oTable = this.byId("idNotSubmittedTable");
-            var oBinding = oTable.getBinding("items");
-            var aData = oBinding.getContexts().map(function (oContext) {
-                var oData = Object.assign({}, oContext.getObject());
-                return oData;
+            var oModel = this.getView().getModel();
+            var aFilters = [
+                new sap.ui.model.Filter(
+                    "StatusFlag",
+                    sap.ui.model.FilterOperator.EQ,
+                    "NotSubmitted"
+                ),
+                new sap.ui.model.Filter(
+                    "Fyear",
+                    sap.ui.model.FilterOperator.EQ,
+                    "2026-2027"
+                )
+            ];
+            oModel.read("/Form10_DashboardSet", {
+                filters: aFilters,
+                success: function (oData) {
+                    var aData = oData.results.map(function (oData) {
+                        var oRow = Object.assign({}, oData);
+                        return oRow;
+                    });
+                    var aCols = this.createColumnConfigNotSubmitted();
+                    var oSettings = {
+                        workbook: {
+                            columns: aCols
+                        },
+                        dataSource: aData,
+                        fileType: "xlsx",
+                        fileName: this.getResourceBundle().getText("title")
+                    };
+                    var oSheet = new Spreadsheet(oSettings);
+                    oSheet.build()
+                        .finally(function () {
+                            oSheet.destroy();
+                        });
+                }.bind(this),
+                error: function () {
+                    sap.m.MessageToast.show(
+                        "Failed to fetch data for download."
+                    );
+                }
             });
-            var aCols = this.createColumnConfigNotSubmitted();
-            var oSettings = {
-                workbook: {
-                    columns: aCols
-                },
-                dataSource: aData,
-                fileType: "xlsx",
-                fileName: this.getResourceBundle().getText("title")
-            };
-            var oSheet = new Spreadsheet(oSettings);
-            oSheet.build()
-                .finally(function () {
-                    oSheet.destroy();
-                });
         },
         createColumnConfigNotSubmitted: function () {
             var aCols = [];
@@ -329,6 +380,99 @@ sap.ui.define([
                 this.getModel("viewModel").setProperty("/filterData/Pernr", oSelectedItem.getTitle());
             }
         },
+        onSendNotificationPress: async function () {
+            const oTable = this.byId("idNotSubmittedTable");
+            const oModel = this.getModel();
+            const aSelectedItems = oTable.getSelectedItems();
+            let oResourceBundle = this.getResourceBundle();
+            if (aSelectedItems.length === 0) {
+                messenger.error(oResourceBundle.getText("atleastOneEmployeeError"));
+                return;
+            }
+            const aPernrs = aSelectedItems.map(function (oItem) {
+                return oItem.getBindingContext().getProperty("Pernr");
+            });
+            const aPernrFilters = aPernrs.map(function (sPernr) {
+                return new Filter(
+                    "Pernr",
+                    FilterOperator.EQ,
+                    sPernr
+                );
+            });
+            const aFilters = [
+                new Filter(
+                    "StatusFlag",
+                    FilterOperator.EQ,
+                    "NotSubmitted"
+                ),
+                new Filter(
+                    "Fyear",
+                    FilterOperator.EQ,
+                    "2026-2027"
+                ),
+                new Filter(
+                    "SendNotif",
+                    FilterOperator.EQ,
+                    "X"
+                ),
+                new Filter({
+                    filters: aPernrFilters,
+                    and: false
+                })
+            ];
+            oModel.read("/Form10_DashboardSet", {
+                filters: aFilters,
+                success: function (oData) {
+                    messenger.success(oResourceBundle.getText("notificationSent"));
+                    resolve();
+                },
+                error: function (oError) {
+                    messenger.error(oResourceBundle.getText("notificationFailed"));
+                    reject();
+                }
+            });
+        },
+        onSendNotificationPressAll: function () {
+            const oTable = this.byId("idNotSubmittedTable");
+            const oModel = this.getModel();
+            let oResourceBundle = this.getResourceBundle();
+            const aSelectedItems = oTable.getItems();
+            if (aSelectedItems.length === 0) {
+                messenger.error(oResourceBundle.getText("atleastOneEmployeeError"));
+                return;
+            }
+            const aPernrs = aSelectedItems.map(function (oItem) {
+                return oItem.getBindingContext().getProperty("Pernr");
+            });
+            const aFilters = [
+                new Filter(
+                    "StatusFlag",
+                    FilterOperator.EQ,
+                    "NotSubmitted"
+                ),
+                new Filter(
+                    "Fyear",
+                    FilterOperator.EQ,
+                    "2026-2027"
+                ),
+                new Filter(
+                    "SendNotif",
+                    FilterOperator.EQ,
+                    "X"
+                )
+            ];
+            oModel.read("/Form10_DashboardSet", {
+                filters: aFilters,
+                success: function (oData) {
+                    messenger.success(oResourceBundle.getText("notificationSent"));
+                    resolve();
+                },
+                error: function (oError) {
+                    messenger.error(oResourceBundle.getText("notificationFailed"));
+                    reject();
+                }
+            });
+        }
 
     });
 });

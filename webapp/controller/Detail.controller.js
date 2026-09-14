@@ -260,6 +260,10 @@ sap.ui.define([
                             oViewModel.setProperty("/formDetails/PersonnelSubAreaText", oResp.results[0].PLANT);
                             oViewModel.setProperty("/formDetails/EmployeeDepartment", `${oResp.results[0].DEP_CODE} - ${oResp.results[0].DEP}`);
                             oViewModel.setProperty("/formDetails/PositionText", oResp.results[0].DESIG);
+                            oViewModel.setProperty("/formDetails/USRID", oResp.results[0].USRID);
+                            oViewModel.setProperty("/formDetails/MOBILE", oResp.results[0].MOBILE);
+                            oViewModel.setProperty("/formDetails/EMAIL", oResp.results[0].EMAIL);
+                            oViewModel.setProperty("/formDetails/DATE_JOIN", oResp.results[0].DATE_JOIN);
                         }
                         await this._getHistoryWithRemarksData(oResp.results[0].PERNR);
                         resolve();
@@ -990,6 +994,7 @@ sap.ui.define([
             if (sNo) {
                 oPayload.Sno = sNo
             }
+            oPayload.Rejectionremarks = oFormDetails.Remarks;
             return oPayload;
         },
         handlePreviewBtnPress: async function () {

@@ -81,18 +81,24 @@
                                 </uxap:actions>
                             </uxap:ObjectPageDynamicHeaderTitle>
                         </uxap:headerTitle>
-                        <uxap:headerContent>
-                            <FlexBox
-                                fitContainer="true"
-                                wrap="Wrap"
-                            >
-                                <core:Fragment
-                                    fragmentName="com.nhpc.zhrinstrdf10aprs1.fragment.EmployeeDetails"
-                                    type="XML"
-                                />
-                            </FlexBox>
-                        </uxap:headerContent>
                         <uxap:sections>
+                        <uxap:ObjectPageSection
+                                title="{i18n>employeeDetails}"
+                                titleUppercase="false"
+                            >
+                                <uxap:subSections>
+                                    <uxap:ObjectPageSubSection>
+                                        <uxap:blocks>
+                                            <VBox>
+                                                <core:Fragment
+                                                    fragmentName="com.nhpc.zhrinstrdf10aprs1.fragment.EmployeeDetails"
+                                                    type="XML"
+                                                />
+                                            </VBox>
+                                        </uxap:blocks>
+                                    </uxap:ObjectPageSubSection>
+                                </uxap:subSections>
+                            </uxap:ObjectPageSection>
                             <uxap:ObjectPageSection
                                 title="{i18n>transactionHoldingsBond}"
                                 titleUppercase="false"
