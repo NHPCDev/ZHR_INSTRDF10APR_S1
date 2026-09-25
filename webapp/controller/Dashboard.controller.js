@@ -8,9 +8,16 @@ sap.ui.define([
     "com/nhpc/zhrinstrdf10aprs1/utils/formatter",
     "com/nhpc/zhrinstrdf10aprs1/utils/messenger",
     "sap/ui/core/BusyIndicator",
-], (BaseController, Filter, FilterOperator, Spreadsheet, Fragment, ValueState, formatter, messenger, BusyIndicator) => {
+    "sap/ui/model/json/JSONModel",
+    "sap/m/SearchField",
+    "sap/ui/table/Column",
+    "sap/m/Label",
+    "sap/m/Column",
+    "sap/m/Text",
+    "sap/ui/export/library"
+], (BaseController, Filter, FilterOperator, Spreadsheet, Fragment, ValueState, formatter, messenger, BusyIndicator,JSONModel, SearchField, UIColumn, Label, MColumn, Text,exportLibrary) => {
     "use strict";
-
+    var EdmType = exportLibrary.EdmType;
     return BaseController.extend("com.nhpc.zhrinstrdf10aprs1.controller.Dashboard", {
         formatter: formatter,
         onInit() {
@@ -18,6 +25,7 @@ sap.ui.define([
         },
         _onRoutePatternMatched: function (oEvent) {
             this.getModel().refresh();
+            this.oEmployeeModel = new JSONModel(sap.ui.require.toUrl("com/nhpc/zhrinstrdf10aprs1/model") + "/employee.json");
             const oTable = this.byId("idDashboardTable");
             const oBinding = oTable.getBinding("items");
             oBinding.attachEventOnce("dataReceived", () => {
@@ -66,22 +74,40 @@ sap.ui.define([
         },
         onSearchBtn: function (oEvent) {
             var oTable = this.byId("idDashboardTable");
+            var oNStable = this.byId("idNotSubmittedTable");
             let oFilterData = this._getTableFilters();
-            oTable.getBinding("items").filter(oFilterData.aFilters);
-            const oBinding = oTable.getBinding("items");
-            oBinding.attachEventOnce("dataReceived", () => {
-                const iCount = oBinding.getLength();
-                this.getModel("viewModel").setProperty("/dashboardCount", iCount);
-            });
+            let oViewModel = this.getModel("viewModel");
+            let sSelectedtable = oViewModel.getProperty("/selectedSegementedButton")
+            if (sSelectedtable !== "notSubmitted") {
+                oTable.getBinding("items").filter(oFilterData.aFilters);
+                const oBinding = oTable.getBinding("items");
+                oBinding.attachEventOnce("dataReceived", () => {
+                    const iCount = oBinding.getLength();
+                    this.getModel("viewModel").setProperty("/dashboardCount", iCount);
+                });
+            } else {
+                oNStable.getBinding("items").filter(oFilterData.aFilters);
+                this.onTableUpdateFinishNotSubmitted();
+            }
+
         },
 
         _getTableFilters: function (oEvent) {
             var oViewModel = this.getModel("viewModel"),
                 oFilterData = oViewModel.getProperty("/filterData"),
                 aSearchFilter = [];
-            if (oFilterData.Fyear) {
+            let sSelectedtable = oViewModel.getProperty("/selectedSegementedButton");
+            if (oFilterData.Fyear && sSelectedtable !== "notSubmitted") {
                 let aFilters = [];
                 aFilters.push(new Filter("Fyear", FilterOperator.EQ, oFilterData.Fyear));
+                aSearchFilter.push(new Filter({
+                    filters: aFilters,
+                    and: false
+                }));
+            }
+            if (oFilterData.Pernr) {
+                let aFilters = [];
+                aFilters.push(new Filter("Pernr", FilterOperator.EQ, oFilterData.Pernr));
                 aSearchFilter.push(new Filter({
                     filters: aFilters,
                     and: false
@@ -96,33 +122,6 @@ sap.ui.define([
                     : []
             }
         },
-        // onCreate: function () {
-        //     var oView = this.getView();
-        //     if (!this._CreateDialog) {
-        //         Fragment.load({
-        //             id: oView.getId(),
-        //             name: "com.nhpc.zhrinstrdf10aprs1.fragment.Create",
-        //             controller: this
-        //         }).then(function (oDialog) {
-        //             this._CreateDialog = oDialog;
-        //             oView.addDependent(oDialog);
-        //             const oTable = this.byId("idDashboardTable");
-        //             const oBinding = oTable.getBinding("items");
-        //             const aContexts = oBinding.getContexts();
-        //             const aCreatedYears = aContexts.map(oContext =>
-        //                 oContext.getProperty("Fyear")
-        //             );
-        //             const aFilters = aCreatedYears.map(
-        //                 sYear => new Filter("Year", FilterOperator.NE, sYear)
-        //             );
-        //             const oComboBox = this.byId("idFyear");
-        //             oComboBox.getBinding("items").filter(aFilters);
-        //             oDialog.open();
-        //         }.bind(this));
-        //     } else {
-        //         this._CreateDialog.open();
-        //     }
-        // },
         onCreate: function () {
             var oView = this.getView();
             let oModel = this.getModel();
@@ -187,58 +186,22 @@ sap.ui.define([
             });
         },
         onDownload: function () {
-            var oModel = this.getModel();
-            let oResourceBundle = this.getResourceBundle();
-            var aFilters = [
-                new sap.ui.model.Filter(
-                    "ApproverFlag",
-                    sap.ui.model.FilterOperator.EQ,
-                    "10"
-                ),
-                new sap.ui.model.Filter(
-                    "Status",
-                    sap.ui.model.FilterOperator.EQ,
-                    "Confirmed"
-                ),
-                new sap.ui.model.Filter(
-                    "FormNo",
-                    sap.ui.model.FilterOperator.EQ,
-                    "FORM10"
-                )
-            ];
-            BusyIndicator.show(0);
-            oModel.read("/Form9headSet", {
-                filters: aFilters,
-                success: function (oData) {
-                    var aData = oData.results.map(function (oData) {
-                        var oRow = Object.assign({}, oData);
-                        oRow.CreatedOn = formatter.formatDate(oRow.CreatedOn);
-                        oRow.ConfirmedOn = formatter.formatDate(oRow.ConfirmedOn);
-
-                        return oRow;
-                    });
-                    var aCols = this.createColumnConfig();
-                    var oSettings = {
-                        workbook: {
-                            columns: aCols
-                        },
-                        dataSource: aData,
-                        fileType: "xlsx",
-                        fileName: this.getResourceBundle().getText("title")
-                    };
-                    var oSheet = new Spreadsheet(oSettings);
-                    oSheet.build()
-                        .finally(function () {
-                            oSheet.destroy();
-                            BusyIndicator.hide();
-                        });
-
-                }.bind(this),
-                error: function () {
-                    BusyIndicator.hide();
-                    messenger.error(oResourceBundle.getText("failedToDownloadData"));
-                }
-            });
+            var oTable = this.byId("idDashboardTable");
+            var oBinding = oTable.getBinding("items");
+            var aCols = this.createColumnConfig();
+            var oSettings = {
+                workbook: {
+                    columns: aCols
+                },
+                dataSource: oBinding,
+                fileType: "xlsx",
+                fileName: this.getResourceBundle().getText("title")
+            };
+            var oSheet = new Spreadsheet(oSettings);
+            oSheet.build()
+                .finally(function () {
+                    oSheet.destroy();
+                });
         },
         createColumnConfig: function () {
             var aCols = [];
@@ -257,14 +220,16 @@ sap.ui.define([
             aCols.push({
                 label: this.getResourceBundle().getText("createdOn"),
                 property: "CreatedOn",
+                type: EdmType.Date,
+                inputFormat: "yyyymmdd",
+                format: "dd.mm.yyyy"
             });
             aCols.push({
                 label: this.getResourceBundle().getText("confirmedOn"),
                 property: "ConfirmedOn",
-            });
-            aCols.push({
-                label: this.getResourceBundle().getText("confirmedBy"),
-                property: "EmployeeName"
+                type: EdmType.Date,
+                inputFormat: "yyyymmdd",
+                format: "dd.mm.yyyy"
             });
             aCols.push({
                 label: this.getResourceBundle().getText("status"),
@@ -273,47 +238,22 @@ sap.ui.define([
             return aCols;
         },
         onDownloadNotSubmitted: function () {
-            var oModel = this.getView().getModel();
-            var aFilters = [
-                new sap.ui.model.Filter(
-                    "StatusFlag",
-                    sap.ui.model.FilterOperator.EQ,
-                    "NotSubmitted"
-                ),
-                new sap.ui.model.Filter(
-                    "Fyear",
-                    sap.ui.model.FilterOperator.EQ,
-                    "2026-2027"
-                )
-            ];
-            oModel.read("/Form10_DashboardSet", {
-                filters: aFilters,
-                success: function (oData) {
-                    var aData = oData.results.map(function (oData) {
-                        var oRow = Object.assign({}, oData);
-                        return oRow;
-                    });
-                    var aCols = this.createColumnConfigNotSubmitted();
-                    var oSettings = {
-                        workbook: {
-                            columns: aCols
-                        },
-                        dataSource: aData,
-                        fileType: "xlsx",
-                        fileName: this.getResourceBundle().getText("title")
-                    };
-                    var oSheet = new Spreadsheet(oSettings);
-                    oSheet.build()
-                        .finally(function () {
-                            oSheet.destroy();
-                        });
-                }.bind(this),
-                error: function () {
-                    sap.m.MessageToast.show(
-                        "Failed to fetch data for download."
-                    );
-                }
-            });
+            var oTable = this.byId("idNotSubmittedTable");
+            var oBinding = oTable.getBinding("items");
+            var aCols = this.createColumnConfigNotSubmitted();
+            var oSettings = {
+                workbook: {
+                    columns: aCols
+                },
+                dataSource: oBinding,
+                fileType: "xlsx",
+                fileName: this.getResourceBundle().getText("title")
+            };
+            var oSheet = new Spreadsheet(oSettings);
+            oSheet.build()
+                .finally(function () {
+                    oSheet.destroy();
+                });
         },
         createColumnConfigNotSubmitted: function () {
             var aCols = [];
@@ -472,7 +412,228 @@ sap.ui.define([
                     reject();
                 }
             });
-        }
+        },
+        onValueHelpOkPress: function (oEvent) {
+            var aTokens = oEvent.getParameter("tokens");
+            var sValueHelpName = oEvent.getSource().sValueHelpName;
+            var oValueHelp = this.fnGetValueHelpDetails(sValueHelpName);
+            var oViewModel = this.getModel("viewModel");
+
+            if (aTokens) {
+                if (sValueHelpName == "EmployeeNumber") {
+                    let Empid = aTokens[0].getCustomData()[0].getValue().Empid;
+                    oViewModel.setProperty("/filterData/Pernr", Empid);
+                }
+            }
+            this._oValueHelpDialog.close();
+        },
+        onValueHelpCancelPress: function () {
+            this._oValueHelpDialog.close();
+        },
+        onValueHelpAfterClose: function () {
+            this._oValueHelpDialog.destroy();
+        },
+        onValueHelpRequest: function (oEvent) {
+            var oController = this;
+            let oSource = oEvent.getSource();
+            oController._currInputId = oSource.getId();
+            oController._currSource = oSource;
+            var sValueHelpName = oSource.data("valuehelp");
+            var oValueHelp = this.fnGetValueHelpDetails(sValueHelpName);
+            var aCols = oValueHelp.model.getData().cols;
+            this._oBasicSearchField = new SearchField();
+            this.loadFragment({
+                name: oValueHelp.ValueHelpFragmentPath,
+            }).then(function (oDialog) {
+
+                this._oValueHelpDialog = oDialog;
+                this.getView().addDependent(this._oValueHelpDialog);
+
+                var oFilterBar = this._oValueHelpDialog.getFilterBar();
+                // Set Basic Search for FilterBar
+                oFilterBar.setFilterBarExpanded(false);
+                oFilterBar.setBasicSearch(this._oBasicSearchField);
+
+                // Trigger filter bar search when the basic search is fired
+                this._oBasicSearchField.attachSearch(function (oEvent) {
+                    oController.onFilterSearch(oEvent, sValueHelpName);
+                });
+                this._oBasicSearchField.setMaxLength(oValueHelp.maxLength);
+                //this._oBasicSearchField.setPlaceholder("Please Provide "+sValueHelpName);
+                this._configureProperties(this._oValueHelpDialog, sValueHelpName);
+
+                this._oValueHelpDialog.getTableAsync().then(function (oTable) {
+                    oTable.setModel(this.getModel());
+                    if (oTable.bindRows) {
+                        oTable.bindAggregation("rows", {
+                            path: oValueHelp.bindingpath,
+                            events: {
+                                dataReceived: function () {
+                                    oController._oValueHelpDialog.update();
+                                }
+                            }
+                        });
+                        for (var i = 0; i < aCols.length; i++) {
+                            var oCol = aCols[i];
+                            var oText = new Text({
+                                text: {
+                                    path: oCol.template
+                                },
+                                wrapping: false
+                            });
+                            var oColumn = new UIColumn({
+                                label: new Label({
+                                    text: oCol.label
+                                }),
+                                template: oText
+                            });
+                            oTable.addColumn(oColumn);
+                        }
+                    }
+
+                    // For Mobile the default table is sap.m.Table
+
+                    if (oTable.bindItems) {
+                        // Bind items to the ODataModel and add columns
+                        oTable.bindAggregation("items", {
+                            path: oValueHelp.bindingpath,
+                            template: new ColumnListItem({
+                                //cells: [new Label({text: "{ProductCode}"}), new Label({text: "{ProductName}"})]
+                                cells: [aCols.map(function (column) { return new Label({ text: "{" + column.template + "}" }) })]
+                            }),
+                            events: {
+                                dataReceived: function () {
+                                    oController._oValueHelpDialog.update();
+                                }
+                            }
+                        });
+                        for (var i = 0; i < aCols.length; i++) {
+                            let labelText = aCols[i].label;
+                            let tableColumn = new MColumn({ header: new Label({ text: labelText }) });
+                            oTable.addColumn(tableColumn);
+                        }
+                    }
+                    this._oValueHelpDialog.update();
+                }.bind(this));
+
+
+                //this._oValueHelpDialog.setTokens(oValueHelp.input.getTokens());
+                this._oValueHelpDialog.open();
+
+            }.bind(this));
+
+        },
+        fnGetValueHelpDetails: function (sValueHelp) {
+            var oValueHelp = {};
+            var sPath = "com.nhpc.zhrinstrdf10aprs1.";
+            var sMultiInputValueHelpFragmentPath = "fragment.MultiInputValueHelp";
+            var oLocationPath = '/ZHR_CDS_IT_EMPLOYEE_F4H';
+            if (sValueHelp === "EmployeeNumber") {
+                oValueHelp = {
+                    "model": this.oEmployeeModel,
+                    "ValueHelpFragmentPath": sPath + sMultiInputValueHelpFragmentPath,
+                    "bindingpath": oLocationPath,
+                    "input": this._currSource,
+                    "maxLength": 100
+                }
+            }
+            return oValueHelp;
+        },
+        _configureProperties: function (oValueHelp, sValueHelp) {
+            oValueHelp.sValueHelpName = sValueHelp;
+            if (sValueHelp === 'EmployeeNumber') {
+                oValueHelp.setTitle("EmployeeNumber");
+                oValueHelp.setKey("Empid");
+                oValueHelp.setDescriptionKey("FullName");
+                oValueHelp.setSupportMultiselect(false);
+                oValueHelp.setSupportRanges(false);
+            }
+        },
+        //Event triggerd on click of Go in Value help Search Filters              
+        onFilterBarSearch: function (oEvent) {
+            var sValueHelpName = oEvent.getSource().getParent().getParent().getParent().getParent().sValueHelpName;
+            var sSearchQuery = this._oBasicSearchField.getValue()
+            this._performVHSearch(sSearchQuery, sValueHelpName);
+        },
+
+        //Event triggered for Search bar in valuehelp of Filters                
+        onFilterSearch: function (oEvent, valuehelpname) {
+            let sValue = oEvent.getSource().getValue();
+            this._performVHSearch(sValue, valuehelpname)
+        },
+        _performVHSearch: function (sValue, sValueHelpName) {
+            if (sValueHelpName === "EmployeeNumber") {
+
+                var oFilter = new Filter({
+                    filters: [
+                        new Filter({
+                            path: "Empid",
+                            operator: FilterOperator.Contains,
+                            value1: sValue
+                        }),
+                        new Filter({
+                            path: "FullName",
+                            operator: FilterOperator.Contains,
+                            value1: sValue
+                        })
+                    ],
+                    and: false
+                });
+
+                this._filterTable(oFilter);
+            }
+        },
+        _filterTable: function (oFilter) {
+            var oValueHelpDialog = this._oValueHelpDialog;
+            oValueHelpDialog.getTableAsync().then(function (oTable) {
+                if (oTable.bindRows) {
+                    oTable.getBinding("rows").filter(oFilter);
+                }
+
+                if (oTable.bindItems) {
+                    oTable.getBinding("items").filter(oFilter);
+                }
+
+                oValueHelpDialog.update();
+            });
+        },
+        onValueHelpChange: function (oEvent) {
+            var sEmpId = oEvent.getParameter("value");
+            var oInput = oEvent.getSource();
+            if (!sEmpId) {
+                this.getModel("filterModel").setProperty("/EmpId", "");
+                return;
+            }
+            if (!/^\d+$/.test(sEmpId)) {
+                oInput.setValue("");
+                this.getModel("filterModel").setProperty("/EmpId", "");
+                return;
+            }
+            this.getModel().read("/ZHR_CDS_IT_EMPLOYEE_F4H", {
+                filters: [
+                    new Filter(
+                        "Empid",
+                        FilterOperator.EQ,
+                        sEmpId
+                    )
+                ],
+                success: function (oData) {
+                    if (oData.results.length > 0) {
+                        this.getModel("viewModel")
+                            .setProperty("/filterData/Pernr", oData.results[0].Empid);
+                    } else {
+                        oInput.setValue("");
+                        this.getModel("viewModel")
+                            .setProperty("/filterData/Pernr", "");
+                    }
+                }.bind(this),
+                error: function () {
+                    oInput.setValue("");
+                    this.getModel("viewModel")
+                        .setProperty("/filterData/Pernr", "");
+                }.bind(this)
+            });
+        },
 
     });
 });

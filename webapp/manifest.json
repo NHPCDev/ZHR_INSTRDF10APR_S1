@@ -37,13 +37,18 @@
     },
     "crossNavigation": {
       "inbounds": {
-        "SecurityHoldings-Approve": {
+        "SecurityHoldingsCompetant-approve": {
           "semanticObject": "SecurityHoldingsCompetant",
-          "action": "Approve",
-          "title": "{{SecurityHoldings-Approve.flpTitle}}",
+          "action": "approve",
+          "title": "{{SecurityHoldingsCompetant-approve.flpTitle}}",
           "signature": {
             "parameters": {},
             "additionalParameters": "allowed"
+          },
+          "indicatorDataSource": {
+            "dataSource": "mainService",
+            "path": "Form9headSet/$count?$filter=ApproverFlag eq '10' and FormNo eq 'FORM10' and Status eq 'Confirmed'",
+            "refresh": 0
           }
         }
       }

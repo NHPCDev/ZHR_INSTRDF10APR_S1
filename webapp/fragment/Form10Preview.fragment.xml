@@ -1,234 +1,355 @@
-<c:FragmentDefinition xmlns:form="sap.ui.layout.form"
+<c:FragmentDefinition
+    xmlns:form="sap.ui.layout.form"
     xmlns="sap.m"
     xmlns:c="sap.ui.core"
-    class="sapUiSizeCompact">
-    <Dialog title="{i18n>form10Preview}" horizontalScrolling="false" >
-    <content>
-    <VBox  class="sapUiSmallMargin">
-    <Title text="{i18n>form10}" class="blueTitle"></Title>
-    <Title text="{i18n>preforma}" textAlign="Center" class="sapUiSmallMargin blueTitle" ></Title>
-    <FormattedText
-    htmlText="{
+    xmlns:table="sap.ui.table"
+    xmlns:rowmodes="sap.ui.table.rowmodes"
+    class="sapUiSizeCompact"
+>
+    <Dialog
+        title="{i18n>form10Preview}"
+        horizontalScrolling="false"
+    >
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <Title
+                    text="{i18n>form10}"
+                    class="blueTitle"
+                />
+                <Title
+                    text="{i18n>preforma}"
+                    textAlign="Center"
+                    class="sapUiSmallMargin blueTitle"
+                />
+                <FormattedText
+                    htmlText="{
         parts: [
             { path: 'viewModel>/formDetails/EmployeeName' },
             { path: 'viewModel>/selectedYear' },
             { path: 'viewModel>/nextYear' }
         ],
         formatter: '.formatter.formatName'
-    }" class="sapUiSmallMargin"/>
-    <form:SimpleForm class="sapUiSmallMargin" >
-        <Label text="{i18n>employeeIdLabel}"></Label>
-        <Text text="{path: 'viewModel>/formDetails/EmployeeId', formatter: '.formatter.formatBlankValue'}"></Text>
-        <Label text="{i18n>employeeNameLabel}"></Label>
-        <Text text="{path: 'viewModel>/formDetails/EmployeeName', formatter: '.formatter.formatBlankValue'}"></Text>
-        <Label text="{i18n>designationLabel}"></Label>
-        <Text text="{path: 'viewModel>/formDetails/Designation', formatter: '.formatter.formatBlankValue'}"></Text>
-        <Label text="{i18n>departmentLabel}"></Label>
-        <Text text="{path: 'viewModel>/formDetails/EmployeeDepartment', formatter: '.formatter.formatBlankValue'}"></Text>
-        <Label text="{i18n>dateOfJoiningLabel}"></Label>
-        <Text text="{path: 'viewModel>/formDetails/DateOfJoining', formatter: '.formatter.formatDate'}"></Text>
-    </form:SimpleForm>
-            <Title
-                text="{i18n>table1header}" class="sapUiSmallMarginTop"
-            />
-    <Table
-            items="{viewModel>/TransactionHolding}"
-            mode="None"
-            updateFinished="onTransactionHoldingTableUpdateFinish"
-            class="sapUiSmallMargin"
-        >
-            <columns>
-                <Column>
-                    <Text text="{i18n>natureOfSecurity}" />
-                </Column>
-                <Column>
-                    <Text text="{i18n>Noofsecuritiesprev}" />
-                </Column>
-                <Column>
-                    <Text text="{i18n>securityPurchased}" />
-                </Column>
-                <Column> 
-                    <Text text="{i18n>Noofsecuritiesheld}" />
-                </Column>
-                <Column>
-                    <Text text="{i18n>createdOn}" />
-                </Column>
-                <Column>
-                    <Text text="{i18n>Dpclientid}" />
-                </Column>
-                <Column>
-                    <Text text="{i18n>Transactiondate}" />
-                </Column>
-                <Column>
-                    <Text text="{i18n>Securitypurchased}" />
-                </Column>
-                <Column >
-                    <Text text="{i18n>Securitysold}"></Text>
-                </Column>
-                <Column>
-                    <Text text="{i18n>SecuritypurchasedConsideration}" />
-                </Column>
-                <Column >
-                    <Text text="{i18n>SecuritysoldConsideration}"></Text>
-                </Column>
-                <Column >
-                    <Text text="{i18n>Offmarket}"></Text>
-                </Column>
-            </columns>
-            <items>
-                <ColumnListItem>
-                    <cells>
-                        <Text text="{viewModel>NatureOfSecurity}" />
-                        <Text text="{viewModel>Noofsecuritiesprev}" />
-                        <Text text="{viewModel>TransactionType}" />
-                        <Text text="{viewModel>Noofsecuritiesheld}" />
-                        <Text text="{path:'viewModel>Createdon',formatter:'.formatter.formatDate'}"></Text>
-                        <Text text="{viewModel>Dpclientid}" />
-                        <Text text="{path:'viewModel>Transactiondate',formatter:'.formatter.formatDate'}" />
-                        <Text text="{viewModel>Securitypurchased}" />
-                        <Text text="{viewModel>Securitysold}" />
-                        <Text text="{viewModel>Securitypurchasedconso}"></Text>
-                        <Text text="{viewModel>Securitysoldconso}"></Text>
-                        <Text text="{viewModel>Offmarket}" />
-                    </cells>
-                </ColumnListItem>
-            </items>
-        </Table>
-            <Title
-                text="{i18n>table2header}"
-            />
-        <Table
-            id="idOtherDisclosuresTable1"
-            items="{viewModel>/OtherDisclosures}"
-            mode="None"
-            updateFinished="onTransactionHoldingTableUpdateFinish"
-        >
-            <columns>
-                <Column>
-                    <Text text="{i18n>nameOfImmediateRelative}" />
-                </Column>
-                <Column>
-                    <Text text="{i18n>relationOfImmediateRelative}" />
-                </Column>
-                <Column>
-                    <Text text="{i18n>phoneNoofImmediateRelative}" />
-                </Column>
-                <Column >
-                    <Text text="{i18n>panOfImmediateRelative}"></Text>
-                </Column>
-                <Column>
-                    <Text text="{i18n>nameOfPersonWhomDesignatedSharesMaternalRelation}" />
-                </Column>
-                <Column >
-                    <Text text="{i18n>mobileOfPersonWhomDesignatedSharesMaternalRelation}"></Text>
-                </Column>
-                <Column >
-                    <Text text="{i18n>panOfPersonWhomDesignatedSharesMaternalRelation}"></Text>
-                </Column>
-            </columns>
-            <items>
-                <ColumnListItem>
-                    <cells>
-                        <Text text="{viewModel>NameOfImmediateRelatives}" />
-                        <Text text="{viewModel>RelationOfImmediateRelative}" />
-                        <Text text="{viewModel>PhoneNoOfImmediateRelative}" />
-                        <Text text="{viewModel>PanOfImmediateRelative}" />
-                        <Text text="{viewModel>NameOfFinancialGuide}"></Text>
-                        <Text text="{viewModel>PhoneNoOfFinancialGuide}"></Text>
-                        <Text text="{viewModel>PanOfOfFinancialGuide}" />
-                    </cells>
-                </ColumnListItem>
-            </items>
-        </Table>
-            <Title
-                text="{i18n>table2data}" class="sapUiSmallMarginTop"
-            />
-        <Table
-            id="idTransactionRelativeTable1"
-            items="{viewModel>/TransactionRelatives}"
-            mode="None"
-            updateFinished="onTransactionRelativeTableUpdateFinish"
-            class="sapUiSmallMargin"
-        >
-            <columns>
-                <Column>
-                    <Text text="{i18n>natureOfSecurity}" />
-                </Column>
-                <Column>
-                    <Text text="{i18n>Relativename}" />
-                </Column>
-                <Column>
-                    <Text text="{i18n>Relativetype}" />
-                </Column>
-                <Column>
-                    <Text text="{i18n>Others}" />
-                </Column>
-                <Column>
-                    <Text text="{i18n>Noofsecuritiesprev}" />
-                </Column>
-                <Column>
-                    <Text text="{i18n>securityPurchased}" />
-                </Column>
-                <Column> 
-                    <Text text="{i18n>Noofsecuritiesheld}" />
-                </Column>
-                <Column>
-                    <Text text="{i18n>createdOn}" />
-                </Column>
-                <Column>
-                    <Text text="{i18n>Dpclientid}" />
-                </Column>
-                <Column>
-                    <Text text="{i18n>Transactiondate}" />
-                </Column>
-                <Column>
-                    <Text text="{i18n>Securitypurchased}" />
-                </Column>
-                <Column >
-                    <Text text="{i18n>Securitysold}"></Text>
-                </Column>
-                <Column>
-                    <Text text="{i18n>SecuritypurchasedConsideration}" />
-                </Column>
-                <Column >
-                    <Text text="{i18n>SecuritysoldConsideration}"></Text>
-                </Column>
-                <Column >
-                    <Text text="{i18n>Offmarket}"></Text>
-                </Column>
-            </columns>
-            <items>
-                <ColumnListItem>
-                    <cells>
-                        <Text text="{viewModel>NatureOfSecurity}" />
-                        <Text text="{viewModel>Relativename}"/>
-                        <Text text="{viewModel>Relativetype}" />
-                        <Text text="{viewModel>Others}" />
-                        <Text text="{viewModel>Noofsecuritiesprev}" />
-                        <Text text="{viewModel>TransactionType}" />
-                        <Text text="{viewModel>Noofsecuritiesheld}" />
-                        <Text text="{path:'viewModel>Createdon',formatter:'.formatter.formatDate'}"></Text>
-                        <Text text="{viewModel>Dpclientid}" />
-                        <Text text="{path:'viewModel>Transactiondate',formatter:'.formatter.formatDate'}" />
-                        <Text text="{viewModel>Securitypurchased}" />
-                        <Text text="{viewModel>Securitysold}" />
-                        <Text text="{viewModel>Securitypurchasedconso}"></Text>
-                        <Text text="{viewModel>Securitysoldconso}"></Text>
-                        <Text text="{viewModel>Offmarket}" />
-                    </cells>
-                </ColumnListItem>
-            </items>
-        </Table>
-        <FormattedText
-        htmlText="{path:'viewModel>/formDetails/UndertakingText',
+    }"
+                    class="sapUiSmallMargin"
+                />
+                <form:SimpleForm
+                    class="sapUiSmallMargin"
+                >
+                    <Label text="{i18n>employeeIdLabel}" />
+                    <Text
+                        text="{path: 'viewModel>/formDetails/EmployeeId', formatter: '.formatter.formatBlankValue'}"
+                    />
+                    <Label text="{i18n>employeeNameLabel}" />
+                    <Text
+                        text="{path: 'viewModel>/formDetails/EmployeeName', formatter: '.formatter.formatBlankValue'}"
+                    />
+                    <Label text="{i18n>designationLabel}" />
+                    <Text
+                        text="{path: 'viewModel>/formDetails/Designation', formatter: '.formatter.formatBlankValue'}"
+                    />
+                    <Label text="{i18n>departmentLabel}" />
+                    <Text
+                        text="{path: 'viewModel>/formDetails/EmployeeDepartment', formatter: '.formatter.formatBlankValue'}"
+                    />
+                    <Label text="{i18n>dateOfJoiningLabel}" />
+                    <Text
+                        text="{path: 'viewModel>/formDetails/DateOfJoining', formatter: '.formatter.formatDate'}"
+                    />
+                </form:SimpleForm>
+                <Title
+                    text="{i18n>table1header}"
+                    class="sapUiSmallMarginTop"
+                />
+                <table:Table
+                    id="idTransactionHoldingTable"
+                    rows="{viewModel>/TransactionHolding}"
+                    selectionMode="None"
+                    alternateRowColors="true"
+                    width="100%"
+                    class="sapUiSmallMargin"
+                >
+                    <table:rowMode>
+                        <rowmodes:Fixed
+                            rowCount="{= ${viewModel>/TransactionHolding}.length >= 2 ? 2 : 1}"
+                            rowContentHeight="45"
+                        />
+                    </table:rowMode>
+                    <table:columns>
+                        <table:Column width="180px">
+                            <Text text="{i18n>natureOfSecurity}" />
+                            <table:template>
+                                <Text text="{viewModel>NatureOfSecurity}" />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="180px">
+                            <Text text="{i18n>Noofsecuritiesprev}" />
+                            <table:template>
+                                <Text text="{viewModel>Noofsecuritiesprev}" />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="180px">
+                            <Text text="{i18n>securityPurchased}" />
+                            <table:template>
+                                <Text text="{viewModel>TransactionType}" />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="180px">
+                            <Text text="{i18n>Noofsecuritiesheld}" />
+                            <table:template>
+                                <Text text="{viewModel>Noofsecuritiesheld}" />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="160px">
+                            <Text text="{i18n>createdOn}" />
+                            <table:template>
+                                <Text
+                                    text="{path:'viewModel>Createdon',formatter:'.formatter.formatDate'}"
+                                />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="160px">
+                            <Text text="{i18n>Dpclientid}" />
+                            <table:template>
+                                <Text text="{viewModel>Dpclientid}" />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="160px">
+                            <Text text="{i18n>Transactiondate}" />
+                            <table:template>
+                                <Text
+                                    text="{path:'viewModel>Transactiondate',formatter:'.formatter.formatDate'}"
+                                />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="180px">
+                            <Text text="{i18n>Securitypurchased}" />
+                            <table:template>
+                                <Text text="{viewModel>Securitypurchased}" />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="180px">
+                            <Text text="{i18n>Securitysold}" />
+                            <table:template>
+                                <Text text="{viewModel>Securitysold}" />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="220px">
+                            <Text
+                                text="{i18n>SecuritypurchasedConsideration}"
+                            />
+                            <table:template>
+                                <Text
+                                    text="{viewModel>Securitypurchasedconso}"
+                                />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="220px">
+                            <Text text="{i18n>SecuritysoldConsideration}" />
+                            <table:template>
+                                <Text text="{viewModel>Securitysoldconso}" />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="150px">
+                            <Text text="{i18n>Offmarket}" />
+                            <table:template>
+                                <Text text="{viewModel>Offmarket}" />
+                            </table:template>
+                        </table:Column>
+                    </table:columns>
+                </table:Table>
+                <Title text="{i18n>table2header}" />
+                <Table
+                    id="idOtherDisclosuresTable1"
+                    items="{viewModel>/OtherDisclosures}"
+                    mode="None"
+                    updateFinished="onTransactionHoldingTableUpdateFinish"
+                >
+                    <columns>
+                        <Column>
+                            <Text text="{i18n>nameOfImmediateRelative}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>relationOfImmediateRelative}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>phoneNoofImmediateRelative}" />
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>panOfImmediateRelative}" />
+                        </Column>
+                        <Column>
+                            <Text
+                                text="{i18n>nameOfPersonWhomDesignatedSharesMaternalRelation}"
+                            />
+                        </Column>
+                        <Column>
+                            <Text
+                                text="{i18n>mobileOfPersonWhomDesignatedSharesMaternalRelation}"
+                            />
+                        </Column>
+                        <Column>
+                            <Text
+                                text="{i18n>panOfPersonWhomDesignatedSharesMaternalRelation}"
+                            />
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <Text
+                                    text="{viewModel>NameOfImmediateRelatives}"
+                                />
+                                <Text
+                                    text="{viewModel>RelationOfImmediateRelative}"
+                                />
+                                <Text
+                                    text="{viewModel>PhoneNoOfImmediateRelative}"
+                                />
+                                <Text
+                                    text="{viewModel>PanOfImmediateRelative}"
+                                />
+                                <Text text="{viewModel>NameOfFinancialGuide}" />
+                                <Text
+                                    text="{viewModel>PhoneNoOfFinancialGuide}"
+                                />
+                                <Text
+                                    text="{viewModel>PanOfOfFinancialGuide}"
+                                />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+                <Title
+                    text="{i18n>table2data}"
+                    class="sapUiSmallMarginTop"
+                />
+                <table:Table
+                    id="idTransactionRelativeTable1"
+                    rows="{viewModel>/TransactionRelatives}"
+                    selectionMode="None"
+                    alternateRowColors="true"
+                    width="100%"
+                    class="sapUiSmallMargin"
+                >
+                    <table:rowMode>
+                        <rowmodes:Fixed
+                            rowCount="{= ${viewModel>/TransactionRelatives}.length >= 2 ? 2 : 1}"
+                            rowContentHeight="45"
+                        />
+                    </table:rowMode>
+                    <table:columns>
+                        <table:Column width="180px">
+                            <Text text="{i18n>natureOfSecurity}" />
+                            <table:template>
+                                <Text text="{viewModel>NatureOfSecurity}" />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="180px">
+                            <Text text="{i18n>Relativename}" />
+                            <table:template>
+                                <Text text="{viewModel>Relativename}" />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="180px">
+                            <Text text="{i18n>Relativetype}" />
+                            <table:template>
+                                <Text text="{viewModel>Relativetype}" />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="150px">
+                            <Text text="{i18n>Others}" />
+                            <table:template>
+                                <Text text="{viewModel>Others}" />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="180px">
+                            <Text text="{i18n>Noofsecuritiesprev}" />
+                            <table:template>
+                                <Text text="{viewModel>Noofsecuritiesprev}" />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="180px">
+                            <Text text="{i18n>securityPurchased}" />
+                            <table:template>
+                                <Text text="{viewModel>TransactionType}" />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="180px">
+                            <Text text="{i18n>Noofsecuritiesheld}" />
+                            <table:template>
+                                <Text text="{viewModel>Noofsecuritiesheld}" />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="160px">
+                            <Text text="{i18n>createdOn}" />
+                            <table:template>
+                                <Text
+                                    text="{path:'viewModel>Createdon',formatter:'.formatter.formatDate'}"
+                                />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="160px">
+                            <Text text="{i18n>Dpclientid}" />
+                            <table:template>
+                                <Text text="{viewModel>Dpclientid}" />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="160px">
+                            <Text text="{i18n>Transactiondate}" />
+                            <table:template>
+                                <Text
+                                    text="{path:'viewModel>Transactiondate',formatter:'.formatter.formatDate'}"
+                                />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="180px">
+                            <Text text="{i18n>Securitypurchased}" />
+                            <table:template>
+                                <Text text="{viewModel>Securitypurchased}" />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="180px">
+                            <Text text="{i18n>Securitysold}" />
+                            <table:template>
+                                <Text text="{viewModel>Securitysold}" />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="220px">
+                            <Text
+                                text="{i18n>SecuritypurchasedConsideration}"
+                            />
+                            <table:template>
+                                <Text
+                                    text="{viewModel>Securitypurchasedconso}"
+                                />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="220px">
+                            <Text text="{i18n>SecuritysoldConsideration}" />
+                            <table:template>
+                                <Text text="{viewModel>Securitysoldconso}" />
+                            </table:template>
+                        </table:Column>
+                        <table:Column width="150px">
+                            <Text text="{i18n>Offmarket}" />
+                            <table:template>
+                                <Text text="{viewModel>Offmarket}" />
+                            </table:template>
+                        </table:Column>
+                    </table:columns>
+                </table:Table>
+                <FormattedText
+                    htmlText="{path:'viewModel>/formDetails/UndertakingText',
         formatter:'.formatter.formatterUndertakingText'}"
-        class="sapUiSmallMargin"/>
-        </VBox>
+                    class="sapUiSmallMargin"
+                />
+            </VBox>
         </content>
         <endButton>
-        <Button
-            text="{i18n>cancelBtnText}"
-            press="onForm10PreviewCancel"/>
-    </endButton>
-        </Dialog>
+            <Button
+                text="{i18n>cancelBtnText}"
+                press="onForm10PreviewCancel"
+            />
+        </endButton>
+    </Dialog>
 </c:FragmentDefinition>

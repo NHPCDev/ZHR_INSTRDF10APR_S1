@@ -24,6 +24,7 @@ sap.ui.define([
             let sSelectedYear = oArgs.selectedYear;
             let oViewModel = this.getModel("viewModel");
             let oModel = this.getModel();
+            let oResourceBundle = this.getResourceBundle();
             oViewModel.setProperty("/selectedYear", sSelectedYear);
             oViewModel.setProperty("/nextYear", sSelectedYear.split("-")[1]);
             if (sPernr === "New") {
@@ -38,7 +39,8 @@ sap.ui.define([
                 await this.setFormDetails(sPernr, sSelectedYear);
                 await this.setUndertakingText();
                 await this.getDefaultEmployeeDetails(sPernr);
-                
+                this.byId("objPageHeader").setText(oResourceBundle.getText("detailPageTitle", sSelectedYear));
+                this.byId("objPageHeader1").setText(oResourceBundle.getText("detailPageTitle", sSelectedYear));
             }
             let Filters = [];
             let sPernrName = oViewModel.getProperty("/formDetails/EmployeeId");
@@ -285,7 +287,8 @@ sap.ui.define([
             var oVM = this.getModel("viewModel");
             var aFilters = [
                 new Filter("Pernr", FilterOperator.EQ, Pernr),
-                new Filter("FormNo", FilterOperator.EQ, "FORM10")
+                new Filter("FormNo", FilterOperator.EQ, "FORM10"),
+                new Filter("ApplicationNo", FilterOperator.EQ, oVM.getProperty("/selectedYear"))
             ];
 
             oModel.read("/RemarkHistorySet", {
@@ -1048,14 +1051,32 @@ sap.ui.define([
         },
         onDecisionSubmit: function (oEvent) {
             const sDecision = this.getModel("viewModel").getProperty("/decision");
-            const fnHandler = sDecision === "Approve"
-                ? this.onDecisionSubmitApprove
-                : this.onDecisionSubmitReturn;
-
-            fnHandler.call(this, oEvent);
+            let oModel = this.getModel();
+            let oViewModel = this.getModel("viewModel");
+            BusyIndicator.show(0);
+            let oResourceBundle = this.getResourceBundle();
+            this.sActionFlag = sDecision === "Approve" ? "Approved" : "Returned";
+            const sMessageKey = sDecision === "Approve" ? "FinalApproveMsg" : "FinalReturnMsg";
+            let oPayload = this.createRequestPayload();
+            oModel.create("/Form9headSet", oPayload, {
+                success: function (oResp) {
+                    BusyIndicator.hide();
+                    this._oRemarksDialog.close();
+                    oViewModel.setProperty("/formDetails/Remarks","");
+                    messenger.success(oResourceBundle.getText(sMessageKey, oResp.Fyear), () => {
+                        this.getRouter().navTo("RouteDashboard", {}, {}, true);
+                    });
+                }.bind(this),
+                error: function (oError) {
+                    BusyIndicator.hide();
+                    messenger.error(JSON.parse(oError.responseText).error.message.value);
+                }.bind(this)
+            });
         },
         handleReturnBtnPress: async function () {
             this.getModel("viewModel").setProperty("/decision","Return");
+            let oViewModel = this.getModel("viewModel");
+            oViewModel.setProperty("/submitEnabled", "false");
             if (!this._oRemarksDialog) {
                 this._oRemarksDialog = await sap.ui.core.Fragment.load({
                     id: this.getView().getId(),
@@ -1069,5 +1090,17 @@ sap.ui.define([
         onDecisionCancel: function () {
             this._oRemarksDialog.close();
         },
+        onRemarksChange: function (oEvent) {
+            let oControl = oEvent.getSource();
+            let sValue = oControl.getValue();
+            let oViewModel = this.getModel("viewModel");
+            if (!sValue) {
+                oViewModel.setProperty("/submitEnabled", "false");
+            } else {
+                oControl.setValueState("None");
+                oControl.setValueStateText("");
+                oViewModel.setProperty("/submitEnabled", "true");
+            }
+        }
     });
 });
