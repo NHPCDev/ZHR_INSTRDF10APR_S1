@@ -184,6 +184,43 @@
                                     </uxap:ObjectPageSubSection>
                                 </uxap:subSections>
                             </uxap:ObjectPageSection>
+                            <!-- Start of Change: 06.11.2026: Balamurugan : Declaration Added, Create button added at table level and total value label change -->
+                            <uxap:ObjectPageSection
+                                title="{i18n>undertakings}"
+                                titleUppercase="false"
+                            >
+                                <uxap:subSections>
+                                    <uxap:ObjectPageSubSection>
+                                        <uxap:blocks>
+                                            <VBox>
+                                                <core:Fragment
+                                                    fragmentName="com.nhpc.zhrinstrdf10aprs1.fragment.Undertakings"
+                                                    type="XML"
+                                                />
+                                            </VBox>
+                                        </uxap:blocks>
+                                    </uxap:ObjectPageSubSection>
+                                </uxap:subSections>
+                            </uxap:ObjectPageSection>
+                            <uxap:ObjectPageSection
+                                title="{i18n>historyRemarks}"
+                                titleUppercase="false"
+                                visible="{= ${viewModel>/formDetails/Status} === 'Confirmed' || ${viewModel>/formDetails/Status} === 'Returned'}"
+                            >
+                                <uxap:subSections>
+                                    <uxap:ObjectPageSubSection>
+                                        <uxap:blocks>
+                                            <VBox>
+                                                <core:Fragment
+                                                    fragmentName="com.nhpc.zhrinstrdf10aprs1.fragment.HistoryRemarks"
+                                                    type="XML"
+                                                />
+                                            </VBox>
+                                        </uxap:blocks>
+                                    </uxap:ObjectPageSubSection>
+                                </uxap:subSections>
+                            </uxap:ObjectPageSection>
+                            <!-- End of Change: 06.11.2026: Balamurugan : Declaration Added, Create button added at table level and total value label change -->
                             <uxap:ObjectPageSection
                                 title="{i18n>historyRemarks}"
                                 titleUppercase="false"
@@ -213,7 +250,7 @@
                             type="Critical"
                             press="handleReturnBtnPress"
                             icon="sap-icon://undo"
-                            visible="true"
+                            visible="{= ${viewModel>/formDetails/Status} === 'Confirmed'}"
                         />
                     </OverflowToolbar>
                 </footer>

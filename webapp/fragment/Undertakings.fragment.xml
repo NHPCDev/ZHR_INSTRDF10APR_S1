@@ -1,0 +1,42 @@
+<!-- Start of Change: 06.11.2026: Balamurugan : Declaration Added, Create button added at table level and total value label change -->
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form"
+    class="sapUiSizeCompact"
+>
+    <VBox class="sapUiSmallMargin">
+        <Table
+            items="{viewModel>/undertakingDocs}"
+            showSeparators="None"
+            backgroundDesign="Transparent"
+        >
+            <columns>
+                <Column width="auto">
+                    <Text text="{i18n>undertaking}" />
+                </Column>
+                <Column
+                    width="4rem"
+                    hAlign="End"
+                >
+                    <Text text="{i18n>agree}" />
+                </Column>
+            </columns>
+            <items>
+                <ColumnListItem>
+                    <cells>
+                        <Text
+                            text="{viewModel>text}"
+                            wrapping="true"
+                        />
+                        <CheckBox
+                            selected="{viewModel>selected}"
+                            editable="{= ${viewModel>/formDetails/Status} !== 'Approved' &amp;&amp; ${viewModel>/formDetails/Status} !== 'Confirmed'}"
+                        />
+                    </cells>
+                </ColumnListItem>
+            </items>
+        </Table>
+    </VBox>
+</core:FragmentDefinition>
+<!-- End of Change: 06.11.2026: Balamurugan : Declaration Added, Create button added at table level and total value label change -->

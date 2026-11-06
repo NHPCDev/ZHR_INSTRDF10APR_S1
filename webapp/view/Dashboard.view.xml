@@ -38,7 +38,7 @@
                                         width="100%"
                                         selectedKey="{viewModel>/filterData/Fyear}"
                                         change="onComboboxChange"
-                                        items="{path: '/FinancialyearF4HSet'}"
+                                        items="{path: '/FinancialYearF4H2Set'}"
                                         valueState="{viewModel>/valueState/selectedYear}"
                                         valueStateText="{viewModel>/valueStateText/selectedYear}"
                                     >
@@ -88,11 +88,6 @@
                         path: 'ApproverFlag',
                         operator: 'EQ',
                         value1: '10'
-                    },
-                    {
-                        path: 'Status',
-                        operator: 'EQ',
-                        value1: 'Confirmed'
                     },
                     {
                         path: 'FormNo',
@@ -212,10 +207,6 @@
                     path: 'StatusFlag',
                     operator: 'EQ',
                     value1: 'NotSubmitted'
-                },{
-                    path:'Fyear',
-                    operator:'EQ',
-                    value1:'2026-2027'
                 }]
             }"
                     updateFinished="onTableUpdateFinishNotSubmitted"

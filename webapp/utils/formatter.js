@@ -163,8 +163,10 @@ sap.ui.define(["sap/ui/core/IconPool",
 
             return oCurrencyFormat.format(parseFloat(sValue), "INR");
         },
-        formatName: function (sName, sFinancialYear, sYear) {
-            return "I, " + (sName || "-") + " Designated Person of NHPC Ltd. furnish below the details of transaction(s) in the Securities of NHPC Ltd., during the financial year " + (sFinancialYear || "") + "  as well as on 31 Mar " + (sYear || "");
+        //Start of Change: 06.11.2026: Balamurugan : Declaration Added, Create button added at table level and total value label change
+        formatName: function (sEmpName, sFinancialYear, sYear, sHeaderText) {
+            return sHeaderText.replace("&LV_EMPNAME&",sEmpName).replace("&LV_YEAR&",sFinancialYear).replace("&YEAR&",sYear)
         }
+        //End of Change: 06.11.2026: Balamurugan : Declaration Added, Create button added at table level and total value label change
     }
 });

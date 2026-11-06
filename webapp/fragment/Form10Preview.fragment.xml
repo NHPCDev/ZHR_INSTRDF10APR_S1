@@ -21,17 +21,20 @@
                     textAlign="Center"
                     class="sapUiSmallMargin blueTitle"
                 />
+                <!-- Start of Change: 06.11.2026: Balamurugan : Declaration Added, Create button added at table level and total value label change -->
                 <FormattedText
                     htmlText="{
         parts: [
-            { path: 'viewModel>/formDetails/EmployeeName' },
+            { path:'viewModel>/formDetails/EmployeeName'},
             { path: 'viewModel>/selectedYear' },
-            { path: 'viewModel>/nextYear' }
+            { path: 'viewModel>/nextYear' },
+            {path: 'viewModel>/formDetails/HeaderText'}
         ],
         formatter: '.formatter.formatName'
     }"
                     class="sapUiSmallMargin"
                 />
+                <!-- End of Change: 06.11.2026: Balamurugan : Declaration Added, Create button added at table level and total value label change -->
                 <form:SimpleForm
                     class="sapUiSmallMargin"
                 >
@@ -66,6 +69,7 @@
                     selectionMode="None"
                     alternateRowColors="true"
                     width="100%"
+                    fixedColumnCount="1"
                     class="sapUiSmallMargin"
                 >
                     <table:rowMode>
@@ -138,15 +142,19 @@
                                 text="{i18n>SecuritypurchasedConsideration}"
                             />
                             <table:template>
+                            <!-- Start of Change: 06.11.2026: Balamurugan : Declaration Added, Create button added at table level and total value label change -->
                                 <Text
-                                    text="{viewModel>Securitypurchasedconso}"
+                                    text="{path:'viewModel>Securitypurchasedconso',formatter:'.formatter.formatAmountToINR'}"
                                 />
+                                <!-- End of Change: 06.11.2026: Balamurugan : Declaration Added, Create button added at table level and total value label change -->
                             </table:template>
                         </table:Column>
                         <table:Column width="220px">
                             <Text text="{i18n>SecuritysoldConsideration}" />
                             <table:template>
-                                <Text text="{viewModel>Securitysoldconso}" />
+                            <!-- Start of Change: 06.11.2026: Balamurugan : Declaration Added, Create button added at table level and total value label change -->
+                                <Text text="{path:'viewModel>Securitysoldconso',formatter:'.formatter.formatAmountToINR'}" />
+                                <!-- End of Change: 06.11.2026: Balamurugan : Declaration Added, Create button added at table level and total value label change -->
                             </table:template>
                         </table:Column>
                         <table:Column width="150px">
@@ -229,6 +237,7 @@
                     selectionMode="None"
                     alternateRowColors="true"
                     width="100%"
+                    fixedColumnCount="1"
                     class="sapUiSmallMargin"
                 >
                     <table:rowMode>
@@ -319,15 +328,19 @@
                                 text="{i18n>SecuritypurchasedConsideration}"
                             />
                             <table:template>
+                            <!-- Start of Change: 06.11.2026: Balamurugan : Declaration Added, Create button added at table level and total value label change -->
                                 <Text
-                                    text="{viewModel>Securitypurchasedconso}"
+                                    text="{path:'viewModel>Securitypurchasedconso',formatter:'.formatter.formatAmountToINR'}"
                                 />
+                                <!-- End of Change: 06.11.2026: Balamurugan : Declaration Added, Create button added at table level and total value label change -->
                             </table:template>
                         </table:Column>
                         <table:Column width="220px">
                             <Text text="{i18n>SecuritysoldConsideration}" />
                             <table:template>
-                                <Text text="{viewModel>Securitysoldconso}" />
+                            <!-- Start of Change: 06.11.2026: Balamurugan : Declaration Added, Create button added at table level and total value label change -->
+                                <Text text="{path:'viewModel>Securitysoldconso',formatter:'.formatter.formatAmountToINR'}" />
+                                <!-- End of Change: 06.11.2026: Balamurugan : Declaration Added, Create button added at table level and total value label change -->
                             </table:template>
                         </table:Column>
                         <table:Column width="150px">
