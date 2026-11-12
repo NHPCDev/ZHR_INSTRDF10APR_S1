@@ -47,7 +47,7 @@
           },
           "indicatorDataSource": {
             "dataSource": "mainService",
-            "path": "Form9headSet/$count?$filter=ApproverFlag eq '10' and FormNo eq 'FORM10' and Status eq 'Confirmed'",
+            "path": "Form9headSet/$count?$filter=ApproverFlag eq '10' and FormNo eq 'FORM10' and Status eq '02'",
             "refresh": 0
           }
         }

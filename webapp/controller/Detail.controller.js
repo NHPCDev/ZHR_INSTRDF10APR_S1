@@ -35,6 +35,7 @@ sap.ui.define([
                 let aPernr = oViewModel.getProperty("/formDetails/EmployeeId");
                 await this.setFormDetails(aPernr, sSelectedYear);
                 oViewModel.setProperty("/formDetails/Status", "New");
+                oViewModel.setProperty("/formDetails/StatusText", "New");
             } else {
                 await this.setUndertakingText();
                 //Start of Change: 06.11.2026: Balamurugan : Declaration Added, Create button added at table level and total value label change
@@ -190,6 +191,7 @@ sap.ui.define([
                         oViewModel.setProperty("/TransactionRelativesBond", oData.results[0].Form9HeadToRelatives.results.filter(i => i.NatureOfSecurity === "Bonds"));
                         oViewModel.setProperty("/TransactionRelativesEquity", oData.results[0].Form9HeadToRelatives.results.filter(i => i.NatureOfSecurity === "Equity"));
                         oViewModel.setProperty("/formDetails/Status", oData.results[0].Status);
+                        oViewModel.setProperty("/formDetails/StatusText", oData.results[0].StatusText);
                         // oViewModel.setProperty("/formDetails/UndertakingText", oData.results[0].UndertakingText);
                         //Start of Change: 06.11.2026: Balamurugan : Declaration Added, Create button added at table level and total value label change
                         oViewModel.setProperty("/undertakingDocs/0/selected", oData.results[0].Undertakingflg === "X");
@@ -920,7 +922,7 @@ sap.ui.define([
             var oModel = this.getModel();
             messenger.confirm(sTitle, sText, "Confirm", null, function () {
                 BusyIndicator.show(0);
-                this.sActionFlag = "Draft";
+                this.sActionFlag = "01";
                 let oPayload = this.createRequestPayload();
                 oModel.create("/Form9headSet", oPayload, {
                     success: function (oResp) {
@@ -945,7 +947,7 @@ sap.ui.define([
             if (bProceed) {
                 messenger.confirm(sTitle, sText, "Confirm", null, function () {
                     BusyIndicator.show(0);
-                    this.sActionFlag = "Confirmed";
+                    this.sActionFlag = "02";
                     let oPayload = this.createRequestPayload();
                     oModel.create("/Form9headSet", oPayload, {
                         success: function (oResp) {
@@ -1045,7 +1047,7 @@ sap.ui.define([
             }
             messenger.confirm(sTitle, sText, "Confirm", null, function () {
                 BusyIndicator.show(0);
-                this.sActionFlag = "Returned";
+                this.sActionFlag = "04";
                 let oPayload = this.createRequestPayload();
                 oModel.create("/Form9headSet", oPayload, {
                     success: function (oResp) {
@@ -1068,7 +1070,7 @@ sap.ui.define([
             let oViewModel = this.getModel("viewModel");
             BusyIndicator.show(0);
             let oResourceBundle = this.getResourceBundle();
-            this.sActionFlag = sDecision === "Approve" ? "Approved" : "Returned";
+            this.sActionFlag = sDecision === "Approve" ? "03" : "04";
             const sMessageKey = sDecision === "Approve" ? "FinalApproveMsg" : "FinalReturnMsg";
             let oPayload = this.createRequestPayload();
             oModel.create("/Form9headSet", oPayload, {

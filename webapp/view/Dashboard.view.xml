@@ -38,7 +38,7 @@
                                         width="100%"
                                         selectedKey="{viewModel>/filterData/Fyear}"
                                         change="onComboboxChange"
-                                        items="{path: '/FinancialYearF4H2Set'}"
+                                        items="{path: '/FinancialyearF4HSet'}"
                                         valueState="{viewModel>/valueState/selectedYear}"
                                         valueStateText="{viewModel>/valueStateText/selectedYear}"
                                     >
@@ -185,7 +185,7 @@
                                 />
                                 <ObjectStatus
                                     text="{
-                                path:'Status',
+                                path:'StatusText',
                                 formatter:'.formatter.formatTitleCase'
                             }"
                                     class="sapMObjectStatusMedium statusBoldText"

@@ -31,7 +31,7 @@
                         />
                         <CheckBox
                             selected="{viewModel>selected}"
-                            editable="{= ${viewModel>/formDetails/Status} !== 'Approved' &amp;&amp; ${viewModel>/formDetails/Status} !== 'Confirmed'}"
+                            editable="false"
                         />
                     </cells>
                 </ColumnListItem>
