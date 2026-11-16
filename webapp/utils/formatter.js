@@ -16,9 +16,9 @@ sap.ui.define(["sap/ui/core/IconPool",
                     return "Success";
                 } else if (status === "02" || status === "New") {
                     return "Information";
-                } else if (status === "01") {
+                } else if (status === "01" || status === "04") {
                     return "Warning";
-                } else if (status === "04") {
+                } else if (status === "05") {
                     return "Error"
                 } else {
                     return "Warning"
